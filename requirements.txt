@@ -6,3 +6,4 @@ numpy
 librosa
 ffmpeg
 python-multipart
+uvicorn
