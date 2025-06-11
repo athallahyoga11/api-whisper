@@ -3,3 +3,6 @@ transformers
 torch
 torchaudio
 numpy
+librosa
+ffmpeg
+python-multipart
