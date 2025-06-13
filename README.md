@@ -17,7 +17,6 @@ Sistem transkripsi suara lengkap yang terdiri dari backend FastAPI dengan Whispe
 - **Backend FastAPI**: Server transkripsi dengan Whisper Small model
 - **Android App**: Aplikasi native untuk recording dan upload audio
 - **VPN Support**: Terintegrasi dengan VPN ITS untuk akses secure
-- **Real-time Processing**: Transkripsi audio secara real-time
 - **RESTful API**: Dokumentasi lengkap dengan Swagger UI
 
 ## 🏗️ Arsitektur Sistem
