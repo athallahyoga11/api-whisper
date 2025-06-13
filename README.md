@@ -1,4 +1,4 @@
-# 🎙️ Jasper Whisper - Voice Transcription System
+# 🎙️ Whisper - Voice Transcription System
 
 Sistem transkripsi suara lengkap yang terdiri dari backend FastAPI dengan Whisper AI dan aplikasi Android native. Dirancang khusus untuk deployment di jaringan ITS dengan akses melalui VPN.
 
@@ -17,6 +17,7 @@ Sistem transkripsi suara lengkap yang terdiri dari backend FastAPI dengan Whispe
 - **Backend FastAPI**: Server transkripsi dengan Whisper Small model
 - **Android App**: Aplikasi native untuk recording dan upload audio
 - **VPN Support**: Terintegrasi dengan VPN ITS untuk akses secure
+- **Real-time Processing**: Transkripsi audio secara real-time
 - **RESTful API**: Dokumentasi lengkap dengan Swagger UI
 
 ## 🏗️ Arsitektur Sistem
@@ -79,6 +80,106 @@ kill <PID>
 ```
 
 ## 📱 Android App Setup
+
+### Build APK from Source
+
+#### Prerequisites
+- Android Studio (latest version)
+- JDK 8+ 
+- Android SDK (API level 21+)
+- Gradle 7.0+
+
+#### Build Steps
+
+**1. Setup Project**
+```bash
+# Clone repository (jika belum ada)
+git clone [repository-url]
+cd repository
+
+# Atau buka project yang sudah ada di Android Studio
+```
+
+**2. Configure Build Environment**
+```bash
+# Set JAVA_HOME (Linux/macOS)
+export JAVA_HOME=/path/to/your/jdk
+export PATH=$PATH:$JAVA_HOME/bin
+
+# Windows
+set JAVA_HOME=C:\Program Files\Java\jdk-version
+set PATH=%PATH%;%JAVA_HOME%\bin
+```
+
+**3. Update Configuration**
+
+**gradle.properties:**
+```properties
+# Server configuration
+SERVER_IP=your.server.ip.address
+SERVER_PORT=8000
+```
+
+**app/build.gradle:**
+```gradle
+android {
+    compileSdk 34
+    
+    defaultConfig {
+        applicationId "com.athallah.jasper"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+        
+        // Add server config as build config
+        buildConfigField "String", "SERVER_IP", "\"${SERVER_IP}\""
+        buildConfigField "String", "SERVER_PORT", "\"${SERVER_PORT}\""
+    }
+    
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Sign with keystore for production
+        }
+    }
+}
+```
+
+**4. Build APK**
+
+**Via Android Studio:**
+```
+1. Open project in Android Studio
+2. Build > Build Bundle(s) / APK(s) > Build APK(s)
+3. Wait for build to complete
+4. Click "locate" to find generated APK
+```
+
+**Via Command Line:**
+```bash
+# Debug build
+./gradlew assembleDebug
+
+# Release build
+./gradlew assembleRelease
+
+# APK location
+# Debug: app/build/outputs/apk/debug/app-debug.apk
+# Release: app/build/outputs/apk/release/app-release.apk
+```
+
+
+
+**5. Installation APK:**
+```bash
+./gradlew assembleRelease
+```
 
 ### Installation Steps
 
@@ -184,7 +285,8 @@ Tambahkan network security config untuk HTTP:
 Update BASE_URL di konfigurasi Retrofit:
 ```kotlin
 object ApiConfig {
-    const val BASE_URL = "http://[SERVER_IP]:8000/"
+    // Use BuildConfig values from gradle
+    private const val BASE_URL = "http://${BuildConfig.SERVER_IP}:${BuildConfig.SERVER_PORT}/"
     
     fun getApiService(): ApiService {
         val retrofit = Retrofit.Builder()
@@ -260,6 +362,29 @@ df -h
 
 ### Android Issues
 
+**Build errors:**
+```bash
+# Clean and rebuild
+./gradlew clean
+./gradlew assembleDebug
+
+# Check dependencies
+./gradlew dependencies
+
+# Sync project with Gradle files (Android Studio)
+File > Sync Project with Gradle Files
+```
+
+**Gradle sync failed:**
+```bash
+# Update Gradle wrapper
+./gradlew wrapper --gradle-version 7.5
+
+# Clear Gradle cache
+rm -rf ~/.gradle/caches/
+./gradlew build --refresh-dependencies
+```
+
 **Aplikasi tidak bisa connect:**
 1. Pastikan VPN aktif dan connected
 2. Check BASE_URL di kode aplikasi
@@ -283,6 +408,30 @@ df -h
 2. Check internet connection
 3. Try download ulang file .ovpn
 4. Contact IT support ITS
+
+## 📚 Project Structure
+
+```
+jasper-whisper/
+├── api-whisper/                 # Backend FastAPI
+│   ├── main.py                 # FastAPI app
+│   ├── requirements.txt        # Python dependencies
+│   ├── .venv/                  # Virtual environment
+│   └── uvicorn.log            # Server logs
+├── jasper-android/             # Android project
+│   ├── app/
+│   │   ├── src/main/
+│   │   │   ├── java/           # Kotlin source files
+│   │   │   ├── res/            # Resources
+│   │   │   └── AndroidManifest.xml
+│   │   ├── build.gradle        # App build config
+│   │   └── proguard-rules.pro
+│   ├── build.gradle            # Project build config
+│   ├── gradle.properties       # Gradle properties
+│   
+├── docs/                       # Documentation
+└── README.md                   # This file
+```
 
 ## 📚 API Documentation
 
@@ -337,7 +486,7 @@ Jika mengalami masalah:
 
 **Contact:**
 - Email: [athallahyoga99@gmail.com]
-- GitHub: [github.com/username]
+- GitHub: [github.com/athallahyoga11]
 
 ---
 
